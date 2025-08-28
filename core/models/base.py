@@ -2,10 +2,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
 
 
 class Base(DeclarativeBase):
-    pass
-
-
-class User(Base):
     __abstract__ = True
 
     @declared_attr.directive
