@@ -3,10 +3,7 @@ from fastapi import APIRouter
 from api_v1.users import crud
 from api_v1.users.schemas import UserCreate
 
-router = APIRouter(
-    prefix="/users",
-    tags=["Users"],
-)
+router = APIRouter(tags=["Users"])
 
 
 @router.post("/")
