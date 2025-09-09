@@ -8,7 +8,7 @@ class ProductBase(BaseModel):
 
 
 class ProductCreate(ProductBase):
-    id: int
+    pass
 
 
 class Product(ProductBase):
