@@ -2,10 +2,12 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.status import HTTP_204_NO_CONTENT
 
-from core.models import db_helper
+from core.models import db_helper, Product_db
 from . import crud
-from .schemas import ProductCreate, Product
+from .schemas import ProductCreate, Product, ProductUpdate, ProductUpdatePartial
+from .dependecies import product_by_id
 
 
 router = APIRouter(tags=["Products"])
@@ -18,7 +20,11 @@ async def get_products(
     return await crud.get_products(session=session)
 
 
-@router.post("/", response_model=Product)
+@router.post(
+    "/",
+    response_model=Product,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_product(
     product_in: ProductCreate,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
@@ -27,15 +33,43 @@ async def create_product(
 
 
 @router.get("/{product_id}/", response_model=Product)
-async def get_product(
-    product_id: int,
+async def get_product(product: Product_db = Depends(product_by_id)):
+    return product
+
+
+@router.put("/{product_id}/", response_model=Product)
+async def update_product(
+    product_update: ProductUpdate,
+    product: Product_db = Depends(product_by_id),
+    # session is cached after first dependency
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    product = await crud.get_product(session=session, product_id=product_id)
-    if product is not None:
-        return product
-
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail=f"Product {product_id} not found",
+    return await crud.update_product(
+        session=session,
+        product=product,
+        product_update=product_update,
     )
+
+
+@router.patch("/{product_id}/", response_model=Product)
+async def update_product_partial(
+    product_update: ProductUpdatePartial,
+    product: Product_db = Depends(product_by_id),
+    # session is cached after first dependency
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await crud.update_product(
+        session=session,
+        product=product,
+        product_update=product_update,
+        partial=True,
+    )
+
+
+@router.delete("/{product_id}/", status_code=HTTP_204_NO_CONTENT)
+async def delete_product(
+    product: Product_db = Depends(product_by_id),
+    # session is cached after first dependency
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+) -> None:
+    return await crud.delete_product(session=session, product=product)
