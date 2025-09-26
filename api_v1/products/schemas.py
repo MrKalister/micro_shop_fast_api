@@ -21,7 +21,7 @@ class ProductUpdatePartial(ProductBase):
     price: int | None = None
 
 
-class Product(ProductBase):
+class ProductResponse(ProductBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int

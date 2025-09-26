@@ -1,19 +1,16 @@
-from typing import Any
-
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.status import HTTP_204_NO_CONTENT
 
-from core.models import db_helper, Product_db
+from core.models import db_helper, Product
 from . import crud
-from .schemas import ProductCreate, Product, ProductUpdate, ProductUpdatePartial
 from .dependecies import product_by_id
-
+from .schemas import ProductCreate, ProductResponse, ProductUpdate, ProductUpdatePartial
 
 router = APIRouter(tags=["Products"])
 
 
-@router.get("/", response_model=list[Product])
+@router.get("/", response_model=list[ProductResponse])
 async def get_products(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -22,7 +19,7 @@ async def get_products(
 
 @router.post(
     "/",
-    response_model=Product,
+    response_model=ProductResponse,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_product(
@@ -32,15 +29,15 @@ async def create_product(
     return await crud.create_product(session=session, product_in=product_in)
 
 
-@router.get("/{product_id}/", response_model=Product)
-async def get_product(product: Product_db = Depends(product_by_id)):
+@router.get("/{product_id}/", response_model=ProductResponse)
+async def get_product(product: Product = Depends(product_by_id)):
     return product
 
 
-@router.put("/{product_id}/", response_model=Product)
+@router.put("/{product_id}/", response_model=ProductResponse)
 async def update_product(
     product_update: ProductUpdate,
-    product: Product_db = Depends(product_by_id),
+    product: Product = Depends(product_by_id),
     # session is cached after first dependency
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -51,10 +48,10 @@ async def update_product(
     )
 
 
-@router.patch("/{product_id}/", response_model=Product)
+@router.patch("/{product_id}/", response_model=ProductResponse)
 async def update_product_partial(
     product_update: ProductUpdatePartial,
-    product: Product_db = Depends(product_by_id),
+    product: Product = Depends(product_by_id),
     # session is cached after first dependency
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -68,7 +65,7 @@ async def update_product_partial(
 
 @router.delete("/{product_id}/", status_code=HTTP_204_NO_CONTENT)
 async def delete_product(
-    product: Product_db = Depends(product_by_id),
+    product: Product = Depends(product_by_id),
     # session is cached after first dependency
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> None:
