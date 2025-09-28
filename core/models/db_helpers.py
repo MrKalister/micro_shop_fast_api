@@ -1,5 +1,4 @@
 from asyncio import current_task
-from typing import AsyncGenerator, Any
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -41,6 +40,6 @@ class DataBaseHelper:
 
 
 db_helper = DataBaseHelper(
-    settings.db_url,
-    settings.db_echo,
+    settings.db.url,
+    settings.db.echo,
 )
