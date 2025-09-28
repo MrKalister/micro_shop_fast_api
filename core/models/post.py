@@ -5,7 +5,7 @@ from . import Base
 from .model_mixins import UserRelationMixin
 
 
-class Post(Base, UserRelationMixin):
+class Post(UserRelationMixin, Base):
     _user_back_populates: str | None = "posts"
 
     title: Mapped[str] = mapped_column(String(100), unique=False)

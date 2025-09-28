@@ -5,7 +5,7 @@ from . import Base
 from .model_mixins import UserRelationMixin
 
 
-class Profile(Base, UserRelationMixin):
+class Profile(UserRelationMixin, Base):
     _user_id_uniq: bool = True
     _user_back_populates: str | None = "profile"
 
