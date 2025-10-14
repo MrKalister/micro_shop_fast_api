@@ -6,8 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from . import Base
 
 if TYPE_CHECKING:
-    from .post import Post
-    from .profile import Profile
+    from . import Post, Profile
 
 
 class User(Base):
