@@ -1,11 +1,10 @@
-import os
 from pathlib import Path
 
 from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
-BASE_DIR = Path(__file__).parent.parent
-DB_PATH: str = os.path.join(BASE_DIR, "sqlite_db")
+BASE_DIR: Path = Path(__file__).parent.parent
+DB_PATH: Path = BASE_DIR / "sqlite_db"
 
 
 class DBSettings(BaseModel):
