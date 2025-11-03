@@ -209,3 +209,4 @@ __marimo__/
 # Pycharm files
 .idea
 /sqlite_db
+/certs/
