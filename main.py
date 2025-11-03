@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 
 from api_v1 import router as router_v1
@@ -20,3 +21,7 @@ def hello_index():
     return {
         "message": "Hello index!",
     }
+
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", reload=True)
